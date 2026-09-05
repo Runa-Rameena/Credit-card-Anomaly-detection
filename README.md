@@ -176,7 +176,7 @@ Credit-card-Anomaly-detection/
 - **Python 3.10+**
 - **Java 11 or 17**
 - **Apache Kafka 3.x**
-- **MongoDB** running on `localhost:27017`
+- **MongoDB** running on `mongodb://127.0.0.1:27017` (or `localhost:27017`)
 
 ### 7.2 Installation
 
