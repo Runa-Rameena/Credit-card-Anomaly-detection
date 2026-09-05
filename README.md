@@ -11,9 +11,6 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Operational_Sink-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Snowflake](https://img.shields.io/badge/Snowflake-Data_Warehouse-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Live_Dashboard-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-
-**Author:** Renuka V J
-
 </div>
 
 ---
