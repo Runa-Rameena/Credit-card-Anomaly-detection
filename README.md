@@ -1,19 +1,40 @@
-# 💳 Real-Time Credit Card Anomaly Detection Pipeline
+<div align="center">
 
-> **Big Data Analytics Project (22AIE312)**  
-> **Institution:** Amrita Vishwa Vidyapeetham, Chennai  
-> **Course Mentor:** Dr. S. Saravanan (Dept. of Computer Science & Engineering)  
-> **Team Members:**  
-> - Renuka V J (`CH.SC.U4AIE23057`)  
-> - Vaishnavi S (`CH.SC.U4AIE23059`)
+# 💳 Real-Time Credit Card Anomaly Detection Pipeline
+### High-Throughput Big Data Architecture using Apache Kafka, Apache Spark, Isolation Forest ML, MongoDB & Snowflake
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)
+![Apache Spark](https://img.shields.io/badge/Apache_Spark-3.5-E25A1C?style=for-the-badge&logo=apachespark&logoColor=white)
+![Apache Kafka](https://img.shields.io/badge/Apache_Kafka-3.6-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Isolation_Forest-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Operational_Sink-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Snowflake](https://img.shields.io/badge/Snowflake-Data_Warehouse-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-Live_Dashboard-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+
+</div>
 
 ---
 
-## 📌 Project Overview
+## 🎓 Academic Project Information
 
-This project presents an enterprise-grade **Real-Time Credit Card Anomaly Detection Pipeline** built to process high-throughput transaction streams and isolate fraudulent activities in real time.
+- **Course**: Big Data Analytics (`22AIE312`)
+- **Institution**: Dept. of Computer Science & Engineering, Amrita Vishwa Vidyapeetham, Chennai
+- **Course Mentor**: **Dr. S. Saravanan**
+- **Authors & Team Members**:
+  - **Renuka V J** (`CH.SC.U4AIE23057`)
+  - **Vaishnavi S** (`CH.SC.U4AIE23059`)
 
-By integrating **Apache Kafka**, **Apache Spark Structured Streaming**, an **Unsupervised Isolation Forest ML Model** optimized via **Pandas UDF (Apache Arrow)**, and dual persistence sinks (**MongoDB** for low-latency operational dashboarding and **Snowflake** for historical analytics), this architecture achieves sub-second fraud detection on distributed hardware.
+---
+
+## 📌 Executive Summary
+
+Modern financial ecosystems process thousands of credit card transactions per second. Traditional static rule-based fraud detection systems suffer from high false-positive rates and fail against evolving, previously unseen fraud vectors. 
+
+This project implements an end-to-end **Real-Time Credit Card Anomaly Detection Pipeline** capable of sub-second streaming inference on distributed hardware:
+- **Event Streaming**: Ingests continuous synthetic transaction webhooks at scale using **Apache Kafka**.
+- **Stream Processing & Distributed ML**: Uses **Apache Spark Structured Streaming** with **PySpark Pandas UDFs** accelerated by **Apache Arrow** to score transactions in real time via an **Unsupervised Isolation Forest** model.
+- **Dual Persistence Strategy**: Simultaneously routes processed events to **MongoDB** (for low-latency operational dashboarding) and **Snowflake** (for historical data warehousing and retroactive analytical queries).
+- **Live Visualization**: Provides a interactive **Streamlit Dashboard** featuring live metrics, fraud rate analytics, custom SQL querying, and manual fraud injection capabilities.
 
 ---
 
@@ -21,80 +42,84 @@ By integrating **Apache Kafka**, **Apache Spark Structured Streaming**, an **Uns
 
 ```mermaid
 flowchart TD
-    A[Transaction Producer<br/>Faker + JSON Stream] -->|Transactions Topic| B[Apache Kafka Broker<br/>+ Zookeeper Cluster]
-    B -->|Spark ReadStream| C[Apache Spark<br/>Structured Streaming]
-    
-    subgraph Spark Core Engine
-        C --> D[Feature Engineering<br/>hour, amount, location]
-        D --> E[Pandas UDF Inference<br/>PyArrow Accelerated]
-        E --> F[Isolation Forest ML Model<br/>decision_function < 0]
+    subgraph Ingestion Layer
+        A["Transaction Generator (Faker API)"] -->|JSON Stream| B["Apache Kafka Broker (Topic: transactions)"]
     end
-    
-    F -->|Dual-Sink Write| G[(MongoDB NoSQL)<br/>Real-Time Operational Sink]
-    F -->|Dual-Sink Write| H[(Snowflake DW)<br/>Historical Analytical Sink]
-    
-    G --> I[Streamlit Dashboard<br/>Live KPI & Anomaly Alerts]
-    H --> I
-    I -->|Manual Override| A
+
+    subgraph Distributed Processing & Inference
+        B -->|Micro-Batch Read| C["Apache Spark Structured Streaming"]
+        C --> D["Feature Engineering (Temporal & Categorical)"]
+        D --> E["Pandas UDF (Apache Arrow Acceleration)"]
+        E --> F["Isolation Forest ML Model (Scikit-Learn)"]
+    end
+
+    subgraph Dual Storage Layer
+        F -->|NoSQL Append| G[("MongoDB (Real-Time Storage)")]
+        F -->|Batch Write| H[("Snowflake Data Warehouse")]
+    end
+
+    subgraph User Interface Layer
+        G --> I["Streamlit Interactive Dashboard"]
+        H --> I
+        I -->|Inject Test Anomaly| B
+    end
 ```
 
 ---
 
-## ✨ Key Features
+## ✨ Key Technical Highlights
 
-- **High-Throughput Ingestion**: Decentralized, fault-tolerant message streaming via **Apache Kafka**.
-- **Distributed Machine Learning**: Real-time batch predictions using `sklearn.ensemble.IsolationForest` executed across Spark worker nodes with **Pandas UDFs** and **Apache Arrow** byte-transfer optimization.
-- **Dual-Sink Persistence**:
-  - **MongoDB**: Instant NoSQL storage backing real-time alerts and Streamlit dashboard polling.
-  - **Snowflake**: Data warehouse staging for long-term historical analytics, regulatory audit logs, and retroactive model retraining.
-- **Dynamic Multi-Laptop Cluster Support**: Easily scalable across multiple nodes over Wi-Fi/LAN networks.
-- **Real-Time Monitoring & Simulation**: Interactive **Streamlit Dashboard** featuring continuous KPI metrics, distribution charts, custom Snowflake SQL query runner, and a manual **Fraud Injection Trigger**.
+1. **High-Throughput Ingestion**: Event-driven architecture powered by Kafka guarantees message durability and decoupled processing.
+2. **Distributed Machine Learning**: Inference executes directly on Spark worker nodes via vectorized Pandas UDFs, bypassing PySpark driver bottlenecks.
+3. **Unsupervised Fraud Isolation**: Uses an `Isolation Forest` (`n_estimators=100`, `contamination=0.05`) trained on standardized monetary, temporal, and spatial vectors to identify novel anomalies without pre-labeled data.
+4. **Dual Storage Sinks**:
+   - **MongoDB**: Supports instant `GET` queries and live UI polling.
+   - **Snowflake**: Supports long-term analytical workloads and regulatory compliance.
+5. **Multi-Node Cluster Ready**: Dynamic IP binding enables horizontal cluster expansion across multiple laptops over local Wi-Fi networks.
 
 ---
 
-## 📁 Repository Structure
+## 📂 Repository Structure
 
 ```text
-credit_card_anomaly/
-├── anomaly_detection/          # Machine learning model training & serialized models
-│   ├── train_model.py          # Script to generate synthetic dataset & train Isolation Forest
-│   ├── isolation_forest_model.pkl # Serialized Isolation Forest model
-│   └── scaler.pkl              # Serialized StandardScaler
-├── config/                     # Configuration files & environment templates
-│   ├── .env.example            # Environment variables template
-│   └── .env                    # Local environment secrets (Git-ignored)
-├── dashboard/                  # Streamlit visual dashboard
-│   └── app.py                  # Live metrics, charts, manual fraud injection
-├── database/                   # Storage integrations
-│   └── snowflake_writer.py     # Snowflake connector & batch writer
-├── producer/                   # Synthetic transaction producer
-│   ├── kafka_producer.py       # Kafka event generator stream
+Credit-card-Anomaly-detection/
+├── anomaly_detection/          # ML Model Training & Artifacts
+│   ├── train_model.py          # Synthetic dataset generator & Isolation Forest training
+│   ├── isolation_forest_model.pkl # Serialized Isolation Forest model binary
+│   └── scaler.pkl              # Serialized StandardScaler binary
+├── config/                     # System Configurations
+│   ├── .env.example            # Template for environment secrets
+│   └── .env                    # Local credentials (Git-ignored)
+├── dashboard/                  # Visualization UI
+│   └── app.py                  # Streamlit dashboard script
+├── database/                   # Storage Connectors
+│   └── snowflake_writer.py     # Snowflake connector and batch writer
+├── producer/                   # Ingestion Producers
+│   ├── kafka_producer.py       # Kafka stream producer
 │   └── transaction_generator.py # Synthetic credit card transaction builder
-├── spark_streaming/            # Core Spark Structured Streaming pipeline
-│   ├── schema.py               # Spark DataFrame schema definition
-│   └── streaming_job.py        # Stream processing, Pandas UDF model scoring, MongoDB sink
-├── project_report.md           # Comprehensive technical project report
-├── demo_commands.md            # Execution guide for multi-laptop setup
-├── requirements.txt            # Python dependencies
-└── README.md                   # Project documentation
+├── spark_streaming/            # Core Big Data Pipeline
+│   ├── schema.py               # Transaction DataFrame Schema
+│   └── streaming_job.py        # Spark streaming job, Pandas UDF & MongoDB sink
+├── .gitignore                  # Git exclusion rules
+├── README.md                   # Project overview & documentation
+├── TECHNICAL_GUIDE.md          # Multi-laptop cluster guide & technical specs
+└── requirements.txt            # Python dependencies
 ```
 
 ---
 
-## ⚙️ Prerequisites & Setup
+## 🚀 Quickstart Guide
 
-### 1. Software Requirements
-- **Java**: OpenJDK 11 or 17
-- **Python**: 3.10+
-- **Apache Kafka & Zookeeper**: 3.x
-- **Apache Spark**: 3.5.x / 4.x
-- **MongoDB**: Local or Cloud instance (`mongodb://127.0.0.1:27017`)
-- **Snowflake Account**: Data warehouse credentials
+### 1. Prerequisites
+- **Python 3.10+**
+- **Java 11 or 17**
+- **Apache Kafka 3.x**
+- **MongoDB** running locally on port `27017`
 
 ### 2. Environment Setup
 
 ```bash
-# Clone repository
+# Clone the repository
 git clone https://github.com/Runa-Rameena/Credit-card-Anomaly-detection.git
 cd Credit-card-Anomaly-detection
 
@@ -102,79 +127,66 @@ cd Credit-card-Anomaly-detection
 python3 -m venv venv
 source venv/bin/activate
 
-# Install Python dependencies
+# Install dependencies
 pip install -r requirements.txt
-```
 
-### 3. Configure Environment Variables
-Copy `.env.example` to `config/.env` and update with your credentials:
-
-```bash
+# Configure environment variables
 cp config/.env.example config/.env
 ```
 
----
+### 3. Step-by-Step Pipeline Execution
 
-## 🚀 Running the Pipeline
-
-Follow the step-by-step execution flow:
-
-### Step 1: Train the Anomaly Detection Model (Optional)
+#### Step A: Train Machine Learning Model (Optional)
 ```bash
 python -m anomaly_detection.train_model
 ```
 
-### Step 2: Start Zookeeper & Kafka Broker
+#### Step B: Start Kafka Broker
 ```bash
-# Terminal 1: Zookeeper
-bin/zookeeper-server-start.sh config/zookeeper.properties
+# Start Zookeeper & Kafka Broker (in separate terminals)
+zookeeper-server-start.sh config/zookeeper.properties
+kafka-server-start.sh config/server.properties
 
-# Terminal 2: Kafka Broker
-bin/kafka-server-stop.sh && bin/kafka-server-start.sh config/server.properties
-
-# Terminal 3: Create Topic (Run once)
-bin/kafka-topics.sh --create --topic transactions --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+# Create topic
+kafka-topics.sh --create --topic transactions --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 ```
 
-### Step 3: Start Kafka Producer
+#### Step C: Start Producer
 ```bash
 python -m producer.kafka_producer
 ```
 
-### Step 4: Run Spark Structured Streaming Job
+#### Step D: Run Spark Structured Streaming Job
 ```bash
-export SPARK_MASTER_URL="spark://<YOUR_MASTER_IP>:7077"  # Or spark://localhost:7077
 python -m spark_streaming.streaming_job
 ```
 
-### Step 5: Launch Streamlit Dashboard
+#### Step E: Launch Dashboard
 ```bash
 streamlit run dashboard/app.py
 ```
-*Access the live dashboard at: `http://localhost:8501`*
+*Open `http://localhost:8501` in your browser.*
 
 ---
 
-## 📊 Dashboard & Monitoring
+## 📊 Interactive Dashboard Features
 
-- **Live Metrics**: Total processed transactions, anomaly counts, fraud rate percentage, total transaction volume.
-- **Snowflake Analytics**: Real-time record counts synchronized with Snowflake.
-- **Interactive Tabs**:
-  1. 📡 **Live Feed**: MongoDB real-time stream table.
-  2. 🚨 **Anomalies**: Filtered list of flagged fraudulent transactions.
-  3. 📊 **Charts**: Distribution graphs and category breakdown.
-  4. ❄️ **Snowflake Query**: Execute direct SQL queries against Snowflake warehouse.
-- **Manual Fraud Injector**: Single-click button to inject synthetic $45,000 darkweb transactions to test model detection latency live.
+- **Live System Metrics**: Monitors total transactions processed, anomaly count, live fraud rate percentage, and total monetary volume.
+- **Real-Time Data Feed**: Live tabular feed backed by MongoDB.
+- **Anomaly Alerts**: Immediate visual flags (`🚨 ANOMALY`) for transactions with decision scores `< 0`.
+- **Distribution Analytics**: Interactive Plotly bar & histogram charts tracking volume per minute and amount distributions.
+- **Snowflake SQL Console**: Allows direct execution of analytical SQL queries against Snowflake.
+- **Manual Fraud Injection**: Dedicated button to trigger synthetic $45,000 darkweb transactions to test model detection latency live.
 
 ---
 
-## 📄 Documentation
+## 📖 Extended Documentation
 
-- [Detailed Technical Report](project_report.md)
-- [Multi-Node Cluster Setup & Demo Commands Guide](demo_commands.md)
+For complete multi-laptop cluster deployment instructions, network configurations, database schemas, and troubleshooting, refer to:
+👉 **[TECHNICAL_GUIDE.md](TECHNICAL_GUIDE.md)**
 
 ---
 
-## 📜 License & Acknowledgments
+## 📄 License & Acknowledgments
 
-Developed as part of the **Big Data Analytics (22AIE312)** curriculum at **Amrita Vishwa Vidyapeetham, Chennai**. Special thanks to **Dr. S. Saravanan** for guidance and mentorship throughout the project development.
+This project was developed under the guidance of **Dr. S. Saravanan** at **Amrita Vishwa Vidyapeetham, Chennai** for the **Big Data Analytics (22AIE312)** course.
