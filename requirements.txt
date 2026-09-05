@@ -1,0 +1,12 @@
+pyspark>=3.5.0
+kafka-python>=2.0.2
+pandas>=2.0.0
+scikit-learn>=1.3.0
+pyarrow>=14.0.0
+joblib>=1.3.0
+pymongo>=4.6.0
+snowflake-connector-python>=3.5.0
+streamlit>=1.29.0
+plotly>=5.18.0
+python-dotenv>=1.0.0
+Faker>=21.0.0

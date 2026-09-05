@@ -1,0 +1,28 @@
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Environment configuration & credentials
+config/.env
+.env
+*.env
+
+# Python cache & compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Checkpoints & temp files
+checkpoint/
+/tmp/spark_checkpoints/
+.qodo/
+
+# IDE & OS files
+.idea/
+.vscode/
+.DS_Store
+
+# Logs
+*.log
