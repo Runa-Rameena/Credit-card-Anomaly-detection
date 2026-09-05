@@ -101,22 +101,26 @@ All processed records—regardless of anomaly status—are concurrently persiste
 
 ---
 
-## 🌲 4. Machine Learning & Anomaly Isolation
+## 🌲 4. Machine Learning & Anomaly Isolation Logic
 
 ### Model Rationale: Isolation Forest
 Traditional supervised models require vast historical datasets of pre-labeled fraud, which rapidly become outdated as attack vectors evolve. The **Isolation Forest** algorithm operates without explicit labels under the principle that anomalies are **"few and different"**. 
 
 Isolation Forest constructs an ensemble of Isolation Trees (`iTrees`) by recursively partitioning features. Because anomalous points lie on the far mathematical tail of feature distributions, they require significantly fewer logical splits to isolate, resulting in noticeably shorter tree path lengths compared to dense, normal transaction clusters.
 
-```
-       [Normal Instance]                    [Anomalous Instance]
-        Requires Many Splits                 Requires Few Splits
-              (Deep)                              (Shallow)
-               o                                     o
-              / \                                   / \
-             o   o                                [Anomaly Isolated!]
-            / \
-           o   o
+```mermaid
+flowchart TD
+    ROOT["Transaction Root Node"] --> S1{"Split on Amount"}
+    
+    S1 -->|"Large Amount"| AC1["Anomaly Candidate"]
+    S1 -->|"Typical Amount"| S2{"Split on Online_Num"}
+    
+    S2 -->|"Unusual Hour"| AC2["Anomaly Candidate"]
+    S2 -->|"Typical Pattern"| FS["Further Recursive Splits..."]
+    
+    AC1 -->|"Short Path Length (Easy Isolation)"| ANOM["Isolation Forest Score: High Anomaly"]
+    AC2 -->|"Short Path Length (Easy Isolation)"| ANOM
+    FS -->|"Long Path Length (Deep Tree Depth)"| NORM["Normal Transaction"]
 ```
 
 ### Model Specifications & Hyperparameters
@@ -128,7 +132,19 @@ Isolation Forest constructs an ensemble of Isolation Trees (`iTrees`) by recursi
 
 ---
 
-## 📁 5. Repository Structure
+## 📊 5. Real-Time Visualization Using Streamlit
+
+The visualization layer is built using **Streamlit** to bridge backend analytics with user monitoring:
+
+- **Live Metrics Dashboard**: Real-time display of total processed transactions, anomaly count, fraud rate percentage, and gross transaction volume.
+- **Snowflake Warehouse Statistics**: Synchronized historical record counts and stored anomaly totals.
+- **Recent Transactions Feed**: Dynamic tabular view showing transaction IDs, Card IDs, timestamps, amounts, merchants, geographic locations, and real-time status flags (`🚨 ANOMALY` vs `✅ Normal`).
+- **Distribution & Category Analytics**: Interactive Plotly bar graphs and histograms tracking transaction counts per minute, amount distributions, and merchant category breakdowns.
+- **Manual Fraud Override Injector**: Allows users to instantly trigger synthetic $45,000 darkweb transactions to test model detection latency live.
+
+---
+
+## 📁 6. Repository Structure
 
 ```text
 Credit-card-Anomaly-detection/
@@ -157,15 +173,15 @@ Credit-card-Anomaly-detection/
 
 ---
 
-## 🚀 6. Execution & Setup Guide
+## 🚀 7. Execution & Setup Guide
 
-### 6.1 Prerequisites
+### 7.1 Prerequisites
 - **Python 3.10+**
 - **Java 11 or 17**
 - **Apache Kafka 3.x**
 - **MongoDB** running on `localhost:27017`
 
-### 6.2 Installation
+### 7.2 Installation
 
 ```bash
 # Clone the repository
@@ -183,7 +199,7 @@ pip install -r requirements.txt
 cp config/.env.example config/.env
 ```
 
-### 6.3 Pipeline Execution Steps
+### 7.3 Pipeline Execution Steps
 
 #### Step 1: Train the Anomaly Detection Model
 ```bash
@@ -220,7 +236,7 @@ streamlit run dashboard/app.py
 
 ---
 
-## 💻 7. Distributed Multi-Laptop Cluster Deployment
+## 💻 8. Distributed Multi-Laptop Cluster Deployment
 
 For complete multi-node network instructions over Wi-Fi, environment variables configuration, MongoDB JSON schemas, and Snowflake DDL scripts, refer to:
 
